@@ -8,7 +8,7 @@ An Arduino Library for controlling DC motors with rotary encoders. This library 
 
 Circuit
 -------
-I used a 754410 quad half-H controller (a pin-compatible L293D). I'm sure it would be cheaper to make out of other components, but i've never done transistor matching, and i'm afraid of burning things.
+I used an Arduino Motor Driver Shield with its two H controllers in parallel to reach 4 Amps of current
 
 ### Example circuit connections
 <table>
