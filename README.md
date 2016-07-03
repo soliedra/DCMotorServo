@@ -8,7 +8,7 @@ An Arduino Library for controlling DC motors with rotary encoders. This library 
 
 Circuit
 -------
-I used an Arduino Motor Driver Shield with its two H controllers in parallel to reach 4 Amps of current
+I used an Arduino Motor Driver Shield with its two H controllers in parallel to reach 4 Amps of current. I cut the pins D0,D1,D2 and D3 so they aren't connected to the Arduino board underneath, with a short cable connected the pins D3 and D5 on the top side of the Arduino motor shield. The reason to do this is that pins D2 and D3 in Arduino boards are the external interruption enabled pins that are needed by the quad encoder.
 
 ### Example circuit connections
 <table>
