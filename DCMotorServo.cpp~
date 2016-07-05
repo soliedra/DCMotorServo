@@ -1,7 +1,7 @@
 #include <DCMotorServo.h>
 
 
-DCMotorServo::DCMotorServo(uint8_t pin_dir_A, uint8_t pin_dir_B, uint8_t pin_pwm_output_A,uint8_t pin_pwm_output_B, uint8_t pin_encode_1, uint8_t pin_encode_2)
+DCMotorServo::DCMotorServo(uint8_t pin_dir_A, uint8_t pin_dir_B, uint8_t pin_pwm_output_A,uint8_t pin_pwm_output_B, uint8_t pin_encode_A, uint8_t pin_encode_B)
 {
   _pin_PWM_output_A = pin_pwm_output_A;
   _pin_PWM_output_B = pin_pwm_output_B;
@@ -14,7 +14,7 @@ DCMotorServo::DCMotorServo(uint8_t pin_dir_A, uint8_t pin_dir_B, uint8_t pin_pwm
   pinMode(_pin_PWM_output_A, OUTPUT);
   pinMode(_pin_PWM_output_B, OUTPUT);
 
-  _position = new Encoder(pin_encode_2,pin_encode_1);
+  _position = new Encoder(pin_encode_A, pin_encode_B);
   _PWM_output = 0;  
   _pwm_skip = 50;
   _position_accuracy = 30;
@@ -114,10 +114,6 @@ void DCMotorServo::stop() {
   analogWrite(_pin_PWM_output_B, _PWM_output);
 }
 
-/* When the Direction pins are HIGH the motor turns CCW and
- * CW when LOW. The Encoder counts + steps in the CW direction
- * and - steps in the CCW direction.
- */ 
 void DCMotorServo::_pick_direction() {
   if (_PID_output < 0)
   {

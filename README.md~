@@ -39,12 +39,18 @@ Pins
 ----
 The outputs of the Driver channels A and B have been connected in parallel to reach a max current of 4 Amps
 Only the Driver PWM and direction pins have been used. 
-The Quad encoder channel A (East side of the motor shaft, front view) connected to pin D2 (external interrupt)
-The Quad encoder channel B (North side of the motor shaft, front view) connected to pin D3 (external interrupt) 
+The Quad encoder channel A (E side of the motor shaft, front view) connected feedback 
+Pinout for motor control uses 3 pins for output. It is somewhat wasteful, but had more flexibility. Two pins for direction control, and one for motor power (assuming PWM).
+Be sure to pick a PWM capable pin for pin_pwm_output.
+
+The two input pins are for the encoder feedback.
+
+Two direcional pins allow for setting a motor brake by shorting the terminals of the motor together (set both directions HIGH, and preferably turn off the PWM)
   
 TODO
 ----
- * Use brake feature and current sensing 
+ * implement brake feature for 3-pin mode
+ * 2-pin constructor
  * implement friendlier tuning method for PID
 </pre>
   </body>
