@@ -26,21 +26,23 @@ I used an Arduino Motor Driver Shield with its two H controllers in parallel to 
 <tr><td>Current sensing</td><td>A0</td><td>A1</td></tr>
 </table>
 
+When the Direction pins are HIGH the motor turns CCW, and CW when LOW.
 
   
 Hardware
 --------
  * Modified [Arduino Motor Shield](https://www.arduino.cc/en/Main/ArduinoMotorShieldR3) as mentioned above.
  * Arduino UNO R3
- * A 12V geared DC motor from a battery drill
- * A DIY Quad encoder wit two [Pololu QTR-1RC Reflectance sensors](https://www.pololu.com/product/2459)
+ * A 12V geared DC motor from a battery drill. Output speed aprox 600rpm
+ * A DIY Quad encoder made with with two [Pololu QTR-1RC Reflectance sensors](https://www.pololu.com/product/2459) that
+ * provides 8CPR.
  
 Pins
 ----
-The outputs of the Driver channels A and B have been connected in parallel to reach a max current of 4 Amps
-Only the Driver PWM and direction pins have been used. 
-The Quad encoder channel A (East side of the motor shaft, front view) connected to pin D2 (external interrupt)
-The Quad encoder channel B (North side of the motor shaft, front view) connected to pin D3 (external interrupt) 
+ * The outputs of the Driver channels A and B have been connected in parallel to reach a max current of 4 Amps
+ * Only the Driver PWM and direction pins have been used. 
+ * The Quad encoder channel A (North side of the motor shaft, front view) connected to pin D2 of the Arduino, not the motor shield (external interrupt)
+ * The Quad encoder channel B (East side of the motor shaft, front view) connected to pin D3 of the Arduino, not the motor shield (external interrupt) 
   
 TODO
 ----
