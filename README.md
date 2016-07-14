@@ -35,7 +35,7 @@ Hardware
  * Arduino UNO R3
  * A 12V geared DC motor from a battery drill. Output speed aprox 600rpm
  * A DIY Quad encoder made with with two [Pololu QTR-1RC Reflectance sensors](https://www.pololu.com/product/2459) that
- * provides 8CPR.
+ * provides 32CPR in the output shaft of the gearbox.
  
 Pins
 ----
