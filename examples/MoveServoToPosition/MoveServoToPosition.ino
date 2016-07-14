@@ -10,7 +10,7 @@
  * A 12V geared DC motor from a battery drill. Output speed aprox 600rpm
  *
  * A DIY Quad encoder made with with two [Pololu QTR-1RC Reflectance sensors](https://www.pololu.com/product/2459) that
- * provides 8CPR.
+ * provides 32CPR.
  *
  * Connections:
  * ------------
@@ -29,9 +29,9 @@
  * 
  * Front view of the encoders location
  *
- *       A
+ *       B
  *      ***
- *     *   * B
+ *     *   * A
  *      ***
  * CCW <----> CW
  *
@@ -40,10 +40,10 @@
  *
  *  Activation sequence
  *                 ______        ______
- *  Encoder A  ___|      |______|      |______
+ *  Encoder B  ___|      |______|      |______
  *                    ______        ______
- *  Encoder B  ______|      |______|      |______
- *             <--CCW  (-)                    (+)   CW-->
+ *  Encoder A  ______|      |______|      |______
+ *             (+) CW-->               <--CCW (-)                    
  *
  * Author: Javier Casado July 2016
  * License: CC SHA BY
@@ -52,7 +52,6 @@
 #include <PID_v1.h>
 #include <DCMotorServo.h>
 
-// Connections
 #define pin_dcmoto_dirA 12
 #define pin_dcmoto_dirB 13
 #define pin_dcmoto_pwm_outA 5
@@ -70,10 +69,10 @@ void setup() {
   //Tune the servo feedback
   //Determined by trial and error
   //servo.myPID->SetTunings(0.1,0.15,0.05);
-  servo.myPID->SetTunings(1.8,0,0.3);
+  servo.myPID->SetTunings(0.45,0,0.1);
   servo.myPID->SetSampleTime(50);  
   servo.setPWMSkip(80);
-  servo.setAccuracy(1);
+  servo.setAccuracy(8);
   //Un-necessary, initializes to 0:
   //servo.setCurrentPosition(0);
   
@@ -93,6 +92,7 @@ void loop() {
 /*
  * Returns true when a new position has been read from
  * the Serial port and false otherwise.
+ * The value read is stored in the global variable targetPosition.
  */
 bool readTargetPosition()
 {
@@ -101,7 +101,7 @@ bool readTargetPosition()
 		//wait for the incomming data to arrive, avoids partial readings
 		delay(10);
 		targetPosition = Serial.parseInt();
-		//There's an end of string read as a zero, remove it reading again 
+		//Maybe there's an end of string read as a zero, remove it reading again 
 		Serial.parseInt();
 		Serial.print("Position: ");
 		Serial.println(targetPosition);
