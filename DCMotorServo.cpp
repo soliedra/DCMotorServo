@@ -1,32 +1,23 @@
 #include <DCMotorServo.h>
 
-
-DCMotorServo::DCMotorServo(uint8_t pin_dir_1, uint8_t pin_dir_2, uint8_t pin_PWM_output, uint8_t pin_encode1, uint8_t pin_encode2)
+DCMotorServo::DCMotorServo(MotorDriver * driver, Encoder * encoder)
 {
-  _pin_PWM_output = pin_PWM_output;
-  _pin_dir_1 = pin_dir_1;
-  _pin_dir_2 = pin_dir_2;
-
-  //Direction and PWM output
-  pinMode(_pin_dir_1, OUTPUT);
-  pinMode(_pin_dir_2, OUTPUT);
-  pinMode(_pin_PWM_output, OUTPUT);
-
-  _position = new Encoder(pin_encode1, pin_encode2);
-  _PWM_output = 0;  
-  _pwm_skip = 50;
-  _position_accuracy = 30;
+	_driver = driver;
+	_position = encoder;
+	_PWM_output = 0;  
+	_pwm_skip = 50;
+	_position_accuracy = 30;
   
-  _PID_input = _position->read();
-  _PID_output = 0;
-  _PID_setpoint = _PID_input;
-  myPID = new PID(&_PID_input, &_PID_output, &_PID_setpoint,.1,.2,.1, DIRECT);
+	_PID_input = _position->read();
+	_PID_output = 0;
+	_PID_setpoint = _PID_input;
+	myPID = new PID(&_PID_input, &_PID_output, &_PID_setpoint,.1,.2,.1, DIRECT);
 
-  myPID->SetSampleTime(50);
-  myPID->SetOutputLimits(_pwm_skip-255, 255-_pwm_skip);
+	myPID->SetSampleTime(50);
+	myPID->SetOutputLimits(_pwm_skip-255, 255-_pwm_skip);
 
-  //turn the PID on
-  myPID->SetMode(AUTOMATIC);
+	//turn the PID on
+	myPID->SetMode(AUTOMATIC);
 }
 
 void DCMotorServo::setCurrentPosition(int new_position)
@@ -99,8 +90,7 @@ void DCMotorServo::run() {
     myPID->SetMode(AUTOMATIC);
   }
 
-  _pick_direction();
-  analogWrite(_pin_PWM_output, _PWM_output);
+  _driver->writePWM(_PWM_output);
 }
 
 void DCMotorServo::stop() {
@@ -108,20 +98,5 @@ void DCMotorServo::stop() {
   _PID_output = 0;
   _PWM_output = 0;
   analogWrite(_pin_PWM_output, _PWM_output);
-}
-
-void DCMotorServo::_pick_direction() {
-  if (_PID_output < 0)
-  {
-    digitalWrite(_pin_dir_1, LOW);
-    digitalWrite(_pin_dir_2, HIGH);
-  }
-  else
-  {
-
-    digitalWrite(_pin_dir_1, HIGH);
-    digitalWrite(_pin_dir_2, LOW);
-  }
-  
 }
 

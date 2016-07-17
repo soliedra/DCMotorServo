@@ -1,7 +1,11 @@
 /* Encoder Library, for measuring quadrature encoded signals
  * http://www.pjrc.com/teensy/td_libs_Encoder.html*/
+#ifndef DCMotorServo_h
+#define DCMotorServo_h
+
 #include <Encoder.h>
 #include <PID_v1.h>
+#include <MotorDriver.h>
 
 /*
 This library uses PID and Encoder feedback to control a DC motor. It is modeled a little bit after the AccelStepper library.
@@ -43,7 +47,8 @@ implement friendlier tuning method for PID
 
 class DCMotorServo {
 public:
-  DCMotorServo(uint8_t pin_dir_1 = 4, uint8_t pin_dir_2 = 5, uint8_t pin_pwm_output = 6, uint8_t pin_encode1 = 2, uint8_t pin_encode2 = 3);
+  DCMotorServo(MotorDriver * driver, Encoder * encoder);
+  
   PID * myPID;
   void run();
   void stop();
@@ -61,7 +66,9 @@ private:
   uint8_t _PWM_output;
   
   Encoder * _position;
+  MotorDriver * _driver;
   uint8_t _pwm_skip;            //The range of PWM to skip (for me, I set it to 50 because duty-cycles under 50/255 are not enough to surpass motor and gearing frictions)
   uint8_t _position_accuracy;   //Set to the highest tolerable inaccuracy (units are encoder counts)
   void _pick_direction();
 };
+#endif
