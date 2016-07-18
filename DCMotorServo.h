@@ -61,7 +61,6 @@ public:
   void setAccuracy(unsigned int);
   void setCurrentPosition(int);
 private:
-  uint8_t _pin_PWM_output, _pin_dir_1, _pin_dir_2;
   double _PID_setpoint, _PID_input, _PID_output;
   uint8_t _PWM_output;
   

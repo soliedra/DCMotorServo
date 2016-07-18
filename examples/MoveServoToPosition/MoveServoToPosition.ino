@@ -18,7 +18,7 @@
  * 
  * Function         | Channel A   | Channel B |
  *---------------------------------------------
- * Direcion         | D12 	  | D13       |
+ * Direcion         | D12 	      | D13       |
  *---------------------------------------------
  * PWM	            | D5 (brigded | D11       |
  *                  | to D3)      |           |
@@ -29,11 +29,11 @@
  * 
  * Front view of the encoders location
  *
- *       A
+ *       B
  *      ***
- *     *   * B
+ *     *   * A
  *      ***
- * CCW <----> CW
+ *  CW <----> CCW
  *
  *  Encoder A -> D2 (Arduino, not motor shield)
  *  Encoder B -> D3 (Arduino, not motor shield)
@@ -43,7 +43,7 @@
  *  Encoder A  ___|      |______|      |______
  *                    ______        ______
  *  Encoder B  ______|      |______|      |______
- *             <--CCW  (-)                    (+)   CW-->
+ *             CCW -->(-)                  (+) <--CW
  *
  * Author: Javier Casado July 2016
  * License: CC SHA BY
@@ -62,7 +62,7 @@
 #define pin_dcmoto_encodeA 2
 #define pin_dcmoto_encodeB 3
 
-Encoder encoder = Encoder(pin_dcmoto_encodeA, pin_dcmoto_encodeB);
+Encoder encoder = Encoder(pin_dcmoto_encodeB,pin_dcmoto_encodeA);
 ArduinoMotorShieldDriver  driver  = ArduinoMotorShieldDriver(pin_dcmoto_dirA, pin_dcmoto_dirB, pin_dcmoto_pwm_outA,pin_dcmoto_pwm_outB);
 DCMotorServo servo = DCMotorServo(&driver, &encoder);
 
@@ -73,10 +73,10 @@ void setup() {
   //Tune the servo feedback
   //Determined by trial and error
   //servo.myPID->SetTunings(0.1,0.15,0.05);
-  servo.myPID->SetTunings(1.4,0,0.3);
-  servo.myPID->SetSampleTime(60);  
-  servo.setPWMSkip(85);
-  servo.setAccuracy(1);
+  servo.myPID->SetTunings(0.45,0,0.1);
+  servo.myPID->SetSampleTime(50);  
+  servo.setPWMSkip(80);
+  servo.setAccuracy(8);
   //Un-necessary, initializes to 0:
   //servo.setCurrentPosition(0);
   

@@ -78,7 +78,16 @@ int DCMotorServo::getActualPosition()
 void DCMotorServo::run() {
   _PID_input = _position->read();
   myPID->Compute();
-  _PWM_output = abs(_PID_output) + _pwm_skip;
+  
+  //_PWM_output can be positive or negative now
+  if(_PID_output > 0) {
+    _PWM_output = _PID_output + _pwm_skip;
+  } 
+  else 
+  {
+	  _PWM_output = _PID_output - _pwm_skip;
+  }
+ 
   if (abs(_PID_setpoint - _PID_input) < _position_accuracy)
   {
     myPID->SetMode(MANUAL);
@@ -97,6 +106,6 @@ void DCMotorServo::stop() {
   myPID->SetMode(MANUAL);
   _PID_output = 0;
   _PWM_output = 0;
-  analogWrite(_pin_PWM_output, _PWM_output);
+  _driver->writePWM(_PWM_output);
 }
 
