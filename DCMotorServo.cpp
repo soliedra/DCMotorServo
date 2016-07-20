@@ -35,6 +35,10 @@ void DCMotorServo::setCurrentPosition(int new_position)
 {
   _position->write(new_position);
   _PID_input = _position->read();
+  
+  // The servomotor shuld remain still at the current position
+  _PID_setpoint = _PID_input;
+  
 }
 
 void DCMotorServo::setAccuracy(unsigned int range)
