@@ -1,15 +1,13 @@
-/* Encoder Library, for measuring quadrature encoded signals
- * http://www.pjrc.com/teensy/td_libs_Encoder.html*/
-#include <Encoder.h>
-#include <PID_v1.h>
-
 /*
+ * Turns the Servo-motor shaft to the position set by the user through the serial port.
+ *
  * This library uses PID and Encoder feedback to control a DC motor. It's modeled a little bit after the AccelStepper library.
  *
  * Pololu VNH5019 Driver has been used. 
  *
  *
- * DC motor driver connections:
+ * DC motor driver connections
+ *-----------------------------
  * 
  * Function         | Pin   
  *----------------------------
@@ -61,29 +59,67 @@
  * 
  * Modified by Javier Casado July 2016
  */
+#include <Encoder.h>
+#include <PID_v1.h>
+#include <DCMotorServo.h>
+
+#define pin_dcmoto_dirA 5
+#define pin_dcmoto_dirB 7
+#define pin_dcmoto_pwm  6
+#define pin_dcmoto_encodeA 2
+#define pin_dcmoto_encodeB 3
 
 
-class DCMotorServo {
-public:
-  DCMotorServo(uint8_t pin_dir_A = 5, uint8_t pin_dir_B = 7, uint8_t pin_pwm_output = 6, uint8_t pin_encode_1 = 2, uint8_t pin_encode_2 = 3);
-  PID * myPID;
-  void run();
-  void stop();
-  void move(int new_rela_position);
-  void moveTo(int new_position);
-  int getRequestedPosition();
-  int getActualPosition();
-  bool finished();
-  bool setPWMSkip(uint8_t);
-  void setAccuracy(unsigned int);
-  void setCurrentPosition(int);
-private:
-  uint8_t _pin_dir_A, _pin_dir_B, _pin_pwm_output, _pin_encode_1, _pin_encode_2;
-  double _PID_setpoint, _PID_input, _PID_output;
-  uint8_t _PWM_output;
+DCMotorServo servo = DCMotorServo(pin_dcmoto_dirA, pin_dcmoto_dirB, pin_dcmoto_pwm, pin_dcmoto_encodeA, pin_dcmoto_encodeB);
+
+int targetPosition = 0;
+
+void setup() {
+
+  //Tune the servo feedback
+  //Determined by trial and error
+  //servo.myPID->SetTunings(0.1,0.15,0.05);
+  servo.myPID->SetTunings(0.45,0,0.1);
+  servo.myPID->SetSampleTime(50);  
+  servo.setPWMSkip(80);
+  servo.setAccuracy(8);
+  //Un-necessary, initializes to 0:
+  //servo.setCurrentPosition(0);
   
-  Encoder * _position;
-  uint8_t _pwm_skip;            //The range of PWM to skip (for me, I set it to 50 because duty-cycles under 50/255 are not enough to surpass motor and gearing frictions)
-  uint8_t _position_accuracy;   //Set to the highest tolerable inaccuracy (units are encoder counts)
-  void _pick_direction();
-};
+  Serial.begin(9600);
+  Serial.println("Enter target position (+ CW -CCW): "); 
+}
+
+
+void loop() {
+  servo.run();
+
+  if (servo.finished()) {
+    if(readTargetPosition()) servo.moveTo(targetPosition);
+  }
+}
+
+/*
+ * Returns true when a new position has been read from
+ * the Serial port and false otherwise.
+ * The value read is stored in the global variable targetPosition.
+ */
+bool readTargetPosition()
+{
+	// read speed to be set
+	while(Serial.available() > 0) {
+		//wait for the incomming data to arrive, avoids partial readings
+		delay(10);
+		targetPosition = Serial.parseInt();
+		//Maybe there's an end of string read as a zero, remove it reading again 
+		Serial.parseInt();
+		Serial.print("Position: ");
+		Serial.println(targetPosition);
+                
+                // Yes, there was a reading
+                return true;
+	}
+   // By default, no reading
+   return false;
+}
+
