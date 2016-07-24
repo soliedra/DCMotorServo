@@ -79,10 +79,10 @@ void setup() {
   //Tune the servo feedback
   //Determined by trial and error
   //servo.myPID->SetTunings(0.1,0.15,0.05);
-  servo.myPID->SetTunings(0.45,0,0.1);
+  servo.myPID->SetTunings(0.45,0.0,0.0);
   servo.myPID->SetSampleTime(50);  
-  servo.setPWMSkip(80);
-  servo.setAccuracy(8);
+  servo.setPWMSkip(50);
+  servo.setAccuracy(1);
   //Un-necessary, initializes to 0:
   //servo.setCurrentPosition(0);
   
