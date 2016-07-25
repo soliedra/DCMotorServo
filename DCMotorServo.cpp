@@ -1,29 +1,33 @@
 #include <DCMotorServo.h>
 
 DCMotorServo::DCMotorServo(MotorDriver * driver, Encoder * encoder)
-{
-	_driver = driver;
-	_position = encoder;
-	_PWM_output = 0;  
-	_pwm_skip = 50;
-	_position_accuracy = 30;
+{  
+  _driver = driver;
+  _position = encoder;
+  _PWM_output = 0;  
+  _pwm_skip = 50;
+  _position_accuracy = 30;
   
-	_PID_input = _position->read();
-	_PID_output = 0;
-	_PID_setpoint = _PID_input;
-	myPID = new PID(&_PID_input, &_PID_output, &_PID_setpoint,.1,.2,.1, DIRECT);
+  _PID_input = _position->read();
+  _PID_output = 0;
+  _PID_setpoint = _PID_input;
+  myPID = new PID(&_PID_input, &_PID_output, &_PID_setpoint,.1,.2,.1, DIRECT);
 
-	myPID->SetSampleTime(50);
-	myPID->SetOutputLimits(_pwm_skip-255, 255-_pwm_skip);
+  myPID->SetSampleTime(50);
+  myPID->SetOutputLimits(_pwm_skip-255, 255-_pwm_skip);
 
-	//turn the PID on
-	myPID->SetMode(AUTOMATIC);
+  //turn the PID on
+  myPID->SetMode(AUTOMATIC);
 }
 
 void DCMotorServo::setCurrentPosition(int new_position)
 {
   _position->write(new_position);
   _PID_input = _position->read();
+  
+  // The servomotor must remain still at the current position
+  _PID_setpoint = _PID_input;
+  
 }
 
 void DCMotorServo::setAccuracy(unsigned int range)
@@ -78,16 +82,7 @@ int DCMotorServo::getActualPosition()
 void DCMotorServo::run() {
   _PID_input = _position->read();
   myPID->Compute();
-  
-  //_PWM_output can be positive or negative now
-  if(_PID_output > 0) {
-    _PWM_output = _PID_output + _pwm_skip;
-  } 
-  else 
-  {
-	  _PWM_output = _PID_output - _pwm_skip;
-  }
- 
+  _PWM_output = abs(_PID_output) + _pwm_skip;
   if (abs(_PID_setpoint - _PID_input) < _position_accuracy)
   {
     myPID->SetMode(MANUAL);
@@ -99,6 +94,7 @@ void DCMotorServo::run() {
     myPID->SetMode(AUTOMATIC);
   }
 
+  _pick_direction();
   _driver->writePWM(_PWM_output);
 }
 
@@ -109,3 +105,23 @@ void DCMotorServo::stop() {
   _driver->writePWM(_PWM_output);
 }
 
+/* When the Direction pins are HIGH the motor turns CCW and
+ * CW when LOW. The Encoder counts + steps in the CW direction
+ * and - steps in the CCW direction.
+ */ 
+
+void DCMotorServo::_pick_direction() {
+  if (_PID_output < 0)
+  {
+    _driver->setDirectionCCW();
+  }
+  else if(_PID_output > 0)
+  {
+    _driver->setDirectionCW();
+  }  
+  // brake
+  else 
+  {
+	_driver->setBrake();
+  }  
+}
