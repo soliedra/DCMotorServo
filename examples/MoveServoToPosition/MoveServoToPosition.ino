@@ -69,10 +69,11 @@
 #define pin_dcmoto_dirA 5
 #define pin_dcmoto_dirB 7
 #define pin_dcmoto_pwm  6
+#define pin_current_sensing  A0
 #define pin_dcmoto_encodeA 2
 #define pin_dcmoto_encodeB 3
 
-VNH5019MotorDriver driver = VNH5019MotorDriver(pin_dcmoto_dirA,pin_dcmoto_dirB,pin_dcmoto_pwm);
+VNH5019MotorDriver driver = VNH5019MotorDriver(pin_dcmoto_dirA,pin_dcmoto_dirB,pin_dcmoto_pwm,pin_current_sensing);
 
 Encoder myEncoder = Encoder(pin_dcmoto_encodeB,pin_dcmoto_encodeA);
 
