@@ -47,7 +47,7 @@ Pins
   
 TODO
 ----
- * Use brake feature and current sensing 
+ * Use current sensing feature 
  * implement friendlier tuning method for PID
 </pre>
   </body>
