@@ -12,6 +12,7 @@ An Arduino Library for controlling DC motors with rotary encoders. This library 
 
  * Encoder Library, for measuring quadrature encoded signals from http://www.pjrc.com/teensy/td_libs_Encoder.html
  * PID Library, for using encoder feedback to controll the motor from http://playground.arduino.cc/Code/PIDLibrary  also on [GitHub](https://github.com/br3ttb/Arduino-PID-Library)
+ * MotorDriver library, to interface a DC Motor Driver from https://github.com/soliedra/MotorDriver
 
 Circuit
 -------
@@ -26,8 +27,9 @@ I've used a Pololu VNH5019 Driver
 <tr><td>Current sensing</td><td>A1</td></tr>
 </table>
 
-When the direction pins are HIGH the motor turns either CCW or CW
-When the direction pins are both HIGH the motor brake to Vcc is set.
+When the directionA pin is HIGH and directionB LOW the motor turns CW.
+When the directionB pin is HIGH and directionA LOW the motor turns CCW.
+When the direction pins are both HIGH the motor brake to Vcc is set (very effective).
 When the direction pins are both LOW the motor brake to GND is set.
   
 Hardware
@@ -40,8 +42,8 @@ Hardware
 Pins
 ----
  * Only the direction and PWM pins of the driver are used.
- * The Quad encoder channel A (East side of the motor shaft, front view) connected to pin D2 of the Arduino, not connected through the motor shield but directly to the Arduino board underneath (external interrupt)
- * The Quad encoder channel B (North side of the motor shaft, front view) connected to pin D3 of the Arduino, not connected through the motor shield but directly to the Arduino board underneath (external interrupt)
+ * The Quad encoder channel A (East side of the motor shaft, front view) connected to pin D2 of the Arduino, (external interrupt)
+ * The Quad encoder channel B (North side of the motor shaft, front view) connected to pin D3 of the Arduino,(external interrupt)
   
 TODO
 ----
