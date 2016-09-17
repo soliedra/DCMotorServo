@@ -3,6 +3,8 @@
 #include <Encoder.h>
 #include <PID_v1.h>
 #include <DCMotorServo.h>
+#include <MotorDriver.h>
+#include <L293DMotorDriver.h>
 
 #define pin_dcmoto_dir1 4
 #define pin_dcmoto_dir2 5
@@ -12,7 +14,9 @@
 //Determined by experimentation, depends on your encoder, and your belt/gearing ratios:
 #define dcmoto_encoder_1_inch 1344
 
-DCMotorServo servo = DCMotorServo(pin_dcmoto_dir1, pin_dcmoto_dir2, pin_dcmoto_pwm_out, pin_dcmoto_encode1, pin_dcmoto_encode2);
+Encoder encoder = Encoder(pin_dcmoto_encode1, pin_dcmoto_encode2);
+L293DMotorDriver  driver  = L293DMotorDriver(pin_dcmoto_dir1, pin_dcmoto_dir2, pin_dcmoto_pwm_out);
+DCMotorServo servo = DCMotorServo(&driver, &encoder);
 
 void setup() {
 

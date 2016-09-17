@@ -1,18 +1,9 @@
 #include <DCMotorServo.h>
 
-
-DCMotorServo::DCMotorServo(uint8_t pin_dir_1, uint8_t pin_dir_2, uint8_t pin_PWM_output, uint8_t pin_encode1, uint8_t pin_encode2)
-{
-  _pin_PWM_output = pin_PWM_output;
-  _pin_dir_1 = pin_dir_1;
-  _pin_dir_2 = pin_dir_2;
-
-  //Direction and PWM output
-  pinMode(_pin_dir_1, OUTPUT);
-  pinMode(_pin_dir_2, OUTPUT);
-  pinMode(_pin_PWM_output, OUTPUT);
-
-  _position = new Encoder(pin_encode1, pin_encode2);
+DCMotorServo::DCMotorServo(MotorDriver * driver, Encoder * encoder)
+{  
+  _driver = driver;
+  _position = encoder;
   _PWM_output = 0;  
   _pwm_skip = 50;
   _position_accuracy = 30;
@@ -33,6 +24,10 @@ void DCMotorServo::setCurrentPosition(int new_position)
 {
   _position->write(new_position);
   _PID_input = _position->read();
+  
+  // The servomotor must remain still at the current position
+  _PID_setpoint = _PID_input;
+  
 }
 
 void DCMotorServo::setAccuracy(unsigned int range)
@@ -100,28 +95,33 @@ void DCMotorServo::run() {
   }
 
   _pick_direction();
-  analogWrite(_pin_PWM_output, _PWM_output);
+  _driver->writePWM(_PWM_output);
 }
 
 void DCMotorServo::stop() {
   myPID->SetMode(MANUAL);
   _PID_output = 0;
   _PWM_output = 0;
-  analogWrite(_pin_PWM_output, _PWM_output);
+  _driver->writePWM(_PWM_output);
 }
+
+/* When the Direction pins are HIGH the motor turns CCW and
+ * CW when LOW. The Encoder counts + steps in the CW direction
+ * and - steps in the CCW direction.
+ */ 
 
 void DCMotorServo::_pick_direction() {
   if (_PID_output < 0)
   {
-    digitalWrite(_pin_dir_1, LOW);
-    digitalWrite(_pin_dir_2, HIGH);
+    _driver->setDirectionCCW();
   }
-  else
+  else if(_PID_output > 0)
   {
-
-    digitalWrite(_pin_dir_1, HIGH);
-    digitalWrite(_pin_dir_2, LOW);
-  }
-  
+    _driver->setDirectionCW();
+  }  
+  // brake
+  else 
+  {
+	_driver->setBrake();
+  }  
 }
-

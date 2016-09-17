@@ -1,45 +1,54 @@
-DCMotorServo
+<html>
+  <head>
+    <meta content="text/html; charset=windows-1252" http-equiv="content-type">
+    <link rel="alternate stylesheet" type="text/css" href="resource://gre-resources/plaintext.css"
+      title="Ajustar líneas largas">
+  </head>
+  <body>
+    <pre>DCMotorServo
 ============
 
 An Arduino Library for controlling DC motors with rotary encoders. This library uses PID and Encoder feedback. It is modeled a little bit after the AccelStepper library.
 
  * Encoder Library, for measuring quadrature encoded signals from http://www.pjrc.com/teensy/td_libs_Encoder.html
  * PID Library, for using encoder feedback to controll the motor from http://playground.arduino.cc/Code/PIDLibrary  also on [GitHub](https://github.com/br3ttb/Arduino-PID-Library)
+ * MotorDriver library, to interface a DC Motor Driver from https://github.com/soliedra/MotorDriver
 
 Circuit
 -------
-I used a 754410 quad half-H controller (a pin-compatible L293D). I'm sure it would be cheaper to make out of other components, but i've never done transistor matching, and i'm afraid of burning things.
+I've used a Pololu VNH5019 Driver
 
 ### Example circuit connections
 <table>
-<tr><td>L293D or 754410 pins</td><td>Device</td><td></td></tr>
-<tr><td>1, 9</td><td>arduino</td><td>pin_pwm_output</td></tr>
-<tr><td>2, 15</td><td>arduino</td><td>pin_dir</td></tr>
-<tr><td>7, 10</td><td>arduino</td><td>pin_dir</td></tr>
-<tr><td>4, 5, 12, 13</td><td>power</td><td>GND</td></tr>
-<tr><td>16</td><td>power</td><td>5V</td></tr>
-<tr><td>8</td><td>power</td><td>12V</td></tr>
-<tr><td>3, 14</td><td>motor</td><td>motor pin 1</td></tr>
-<tr><td>6, 11</td><td>motor</td><td>motor pin 2</td></tr>
+<tr><td>Function</td><td>Pin</td></tr>
+<tr><td>Direction A (CW) </td><td>D5</td></tr>
+<tr><td>Direction B (CCW) </td><td>D7</td></tr>
+<tr><td>PMW</td><td>D6</td></tr>
+<tr><td>Current sensing</td><td>A1</td></tr>
 </table>
+
+When the directionA pin is HIGH and directionB LOW the motor turns CW.
+When the directionB pin is HIGH and directionA LOW the motor turns CCW.
+When the direction pins are both HIGH the motor brake to Vcc is set (very effective).
+When the direction pins are both LOW the motor brake to GND is set.
   
 Hardware
 --------
- * [Metal Gearmotor 37Dx57L mm with 64 CPR Encoder from Pololu](http://www.pololu.com/catalog/product/1447)
- * Arduino
- * ~~754410 or L293D~~ [MC33926 Motor Driver Carrier](http://www.pololu.com/product/1212)
-  
+ * [Pololu VNH5019 Driver](https://www.pololu.com/product/1451).
+ * Arduino UNO R3
+ * A 12V geared DC motor from a battery drill. Output speed approx 600rpm
+ * A DIY Quad encoder made with with two [Pololu QTR-1RC Reflectance sensors](https://www.pololu.com/product/2459) that provides 32CPR in the output shaft of the gearbox.
+ 
 Pins
 ----
-Pinout for motor control uses 3 pins for output. It is somewhat wasteful, but had more flexibility. Two pins for direction control, and one for motor power (assuming PWM).
-Be sure to pick a PWM capable pin for pin_pwm_output.
-
-The two input pins are for the encoder feedback.
-
-Two direcional pins allow for setting a motor brake by shorting the terminals of the motor together (set both directions HIGH, and preferably turn off the PWM)
+ * Only the direction and PWM pins of the driver are used.
+ * The Quad encoder channel A (East side of the motor shaft, front view) connected to pin D2 of the Arduino, (external interrupt)
+ * The Quad encoder channel B (North side of the motor shaft, front view) connected to pin D3 of the Arduino,(external interrupt)
   
 TODO
 ----
- * implement brake feature for 3-pin mode
- * 2-pin constructor
+ * Use current sensing feature 
  * implement friendlier tuning method for PID
+</pre>
+  </body>
+</html>
