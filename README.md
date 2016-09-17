@@ -9,7 +9,7 @@
 ============
 
 An Arduino Library for controlling DC motors with rotary encoders. This library uses PID and Encoder feedback. It is modeled a little bit after the AccelStepper library.
-The only thing I've done is to modify [julester23/DCMotorServo](https://github.com/julester23/DCMotorServo) to make it more objet oriented. All the logic related to the motor driver has been extracted to the Abstract class MotorDriver. As a result DCMotorServo is a composition of MotorDriver and Encoder. The main advantage is that you can implement (if needed) a new MotorDriver that suits your needs witouth modifiying the DCMotorServo library.
+The only thing I've done is to modify [julester23/DCMotorServo](https://github.com/julester23/DCMotorServo) to make it more objet oriented. All the logic related to the motor driver has been extracted to the abstract class MotorDriver. As a result DCMotorServo is a composition of MotorDriver and Encoder. The main advantage is that you can implement (if needed) a new MotorDriver that suits your needs without modifiying the DCMotorServo library.
 
  * Encoder Library, for measuring quadrature encoded signals from http://www.pjrc.com/teensy/td_libs_Encoder.html
  * PID Library, for using encoder feedback to controll the motor from http://playground.arduino.cc/Code/PIDLibrary  also on [GitHub](https://github.com/br3ttb/Arduino-PID-Library)
